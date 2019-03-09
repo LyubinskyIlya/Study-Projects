@@ -1,1 +1,1 @@
-Hash function, ГОСТ Р 34.11-2012 and set of tests
+Hash function ГОСТ Р 34.11-2012 and set of tests
