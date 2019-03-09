@@ -52,17 +52,17 @@ uint64_t M[64] = {
 };
 
 class uint512_t {         
-	uint64_t elem[8]; ////////// в 0 - старшие, в 7 - младшие (прямой порядок)
+	uint64_t elem[8]; 
 public:
 	uint512_t(){   //init 
 		for (int i=0; i<8; i++)
 			elem[i]=0;
 	}
-	uint512_t(uint64_t * arr){  ////////// в 0 - старшие, в 7 - младшие (прямой порядок)
+	uint512_t(uint64_t * arr){  
 		for (int i=0; i<8; i++)
 			elem[i]=arr[i];
 	}
-	uint512_t(uint8_t arr[]){  // в 0 - младший, в 63 - старший
+	uint512_t(uint8_t arr[]){  
 		uint64_t x;
 		for(int i=0; i<8; i++) {
 			x=0;
@@ -111,7 +111,7 @@ public:
 		}
 		return uint512_t(arr);	
 	}
-	uint8_t get8bits(int i, bool b = false) { // 0 - младший байт elem[7][0], 63 - старший elem[0][7]
+	uint8_t get8bits(int i, bool b = false) { 
 		uint64_t x = 0xFF;
 		uint64_t j=7-i/8;
 		i=i%8;
@@ -389,7 +389,7 @@ int main(int argc, char * argv[]) {  //argv[1] == filename
     context ctx;
 
 
-    #if defined(g256) //проверка правильности значения, не войдет в итоговую программу
+    #if defined(g256) //проверка правильности значения
     	init(&ctx, true);
     #else
     	init(&ctx, false);
@@ -403,7 +403,7 @@ int main(int argc, char * argv[]) {  //argv[1] == filename
     finish(&ctx, ans);
 
 
-  #if defined(test)      //проверка правильности значения, не войдет в итоговую программу
+  #if defined(test)      //проверка правильности значения
     #if defined(g256)
     	for (int i=0; i<32; i++)
     #else
