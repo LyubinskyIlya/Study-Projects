@@ -6,7 +6,8 @@ using namespace std;
 
 bool issimple(int a){
 	if (a > 1) {
-		for (int i = 2; i <= sqrt(a); i++)
+		int sq = sqrt(a);
+		for (int i = 2; i <= sq; i++)
 			if (a % i == 0)
 				return false;
 		return true;
@@ -50,7 +51,7 @@ int binfind(int target, const int arr[], const int size, bool first) {  // retur
 
 int main(int argc, char * argv[]){
 	if ( (argc < 3) || (argc % 2 == 0) )
-		return 255;
+		return -1;
 	for (int i = 1; i < argc; i = i + 2) {
 		int n = atoi(argv[i]), m = atoi(argv[i+1]);
 		int c = 0;
