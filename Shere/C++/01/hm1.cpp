@@ -4,7 +4,7 @@
 
 using namespace std;
 
-bool issimple(int a){
+bool issimple(const int a){
 	if (a > 1) {
 		int sq = sqrt(a);
 		for (int i = 2; i <= sq; i++)
