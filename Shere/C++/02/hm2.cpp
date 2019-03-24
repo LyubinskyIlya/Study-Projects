@@ -20,9 +20,9 @@ int64_t expr(istream*, bool);
 
 Token_value get_token(istream* input) {
   	char ch;
-  	do {
-    	if (!input->get(ch)) 
-      		return curr_tok = END;
+	do {
+	if (!input->get(ch)) 
+		return curr_tok = END;
   	} while (isspace(ch));
   	switch (ch) {
     	case 0:
@@ -69,10 +69,10 @@ int64_t term(istream* input) {
         	left *= prim(input);
         	break;
       		case DIV:
-        		if (int64_t d = prim(input)) {
-            		left /= d;
-            		break;
-        		}
+				if (int64_t d = prim(input)) {
+					left /= d;
+					break;
+				}
         		else {
         			cerr << "error" << endl;
         			exit(1);
