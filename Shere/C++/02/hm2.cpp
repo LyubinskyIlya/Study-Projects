@@ -21,8 +21,8 @@ int64_t expr(istream*, bool);
 Token_value get_token(istream* input) {
 	char ch;
 	do {
-	if (!input->get(ch)) 
-		return curr_tok = END;
+		if (!input->get(ch)) 
+			return curr_tok = END;
 	} while (isspace(ch));
 	switch (ch) {
 		case 0:
