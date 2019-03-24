@@ -44,8 +44,8 @@ Token_value get_token(istream* input) {
 }
 
 int64_t prim(istream* input) {
-    get_token(input);
-  	switch (curr_tok) {
+	get_token(input);
+	switch (curr_tok) {
     	case NUMBER: {
       		int64_t v = number_value;
       		get_token(input);
