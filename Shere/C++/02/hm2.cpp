@@ -1,5 +1,5 @@
 #include <iostream>
-#include <sstream>	
+#include <sstream>
 
 using namespace std;
 
@@ -14,68 +14,66 @@ enum Number_value : char {
 	NUM9='9',
 };
 
-Token_value curr_tok = NUMBER;
-int64_t number_value;
-int64_t expr(istream*, bool);
-
-Token_value get_token(istream* input) {
+void get_token(istringstream &input, Token_value &curr_tok, int64_t &number_value) {
 	char ch;
 	do {
-		if (!input->get(ch)) 
-			return curr_tok = END;
+		if (!input.get(ch)) {
+			curr_tok = END;
+			return;
+		}
 	} while (isspace(ch));
 	switch (ch) {
 		case 0:
-			return curr_tok = END;
+			curr_tok = END;
+			return;
 		case MUL:
 		case DIV:
 		case PLUS:
 		case MINUS:
-			return curr_tok = Token_value(ch);
+			curr_tok = Token_value(ch);
+			return;
 		case NUM0: case NUM1: case NUM2: case NUM3: case NUM4:
 		case NUM5: case NUM6: case NUM7: case NUM8: case NUM9:
-			input->putback(ch);
-			*input >> number_value;
-			return curr_tok = NUMBER;
+			input.putback(ch);
+			input >> number_value;
+			curr_tok = NUMBER;
+			return;
 		default:
-			cerr << "error" << endl;
-			exit(1);
+			throw string("error");
 	}
 }
 
-int64_t prim(istream* input) {
-	get_token(input);
+int64_t prim(istringstream &input, Token_value &curr_tok, int64_t &number_value) {
+	get_token(input, curr_tok, number_value);
 	switch (curr_tok) {
 		case NUMBER: {
 			int64_t v = number_value;
-			get_token(input);
+			get_token(input, curr_tok, number_value);
 			return v;
 		}
 		case MINUS:
-			return -prim(input);
+			return -prim(input, curr_tok, number_value);
 		case PLUS:
-			return prim(input);
+			return prim(input, curr_tok, number_value);
 		default:
-			cerr << "error" << endl;
-			exit(1);
+			throw string("error");
 	}
 }
 
-int64_t term(istream* input) {
-	int64_t left = prim(input);
+int64_t term(istringstream &input, Token_value &curr_tok, int64_t &number_value) {
+	int64_t left = prim(input, curr_tok, number_value);
 	while (true) {
 		switch (curr_tok) {
 			case MUL:
-				left *= prim(input);
+				left *= prim(input, curr_tok, number_value);
 				break;
 			case DIV:
-				if (int64_t d = prim(input)) {
+				if (int64_t d = prim(input, curr_tok, number_value)) {
 					left /= d;
 					break;
 				}
 				else {
-					cerr << "error" << endl;
-					exit(1);
+					throw string("error");
 				}
 			default:
 				return left;
@@ -83,15 +81,15 @@ int64_t term(istream* input) {
 	}
 }
 
-int64_t expr(istream* input) {
-	int64_t left = term(input);
+int64_t expr(istringstream &input, Token_value &curr_tok, int64_t &number_value) {
+	int64_t left = term(input, curr_tok, number_value);
 	while(true) {
 		switch (curr_tok) {
 		case PLUS:
-			left += term(input);
+			left += term(input, curr_tok, number_value);
 			break;
 		case MINUS:
-			left -= term(input);
+			left -= term(input, curr_tok, number_value);
 			break;
 		default:
 			return left;
@@ -100,18 +98,19 @@ int64_t expr(istream* input) {
 }
 
 int main(int argc, char* argv[]) {
-	istream* input = nullptr;
-	if (argc == 2) 
-		input = new istringstream(argv[1]);
-	else {
-		cerr << "error" << endl;
-		exit(1);
+	Token_value curr_tok = NUMBER;
+	int64_t number_value = 0;
+	try {
+		if (argc == 2) {
+			istringstream input(argv[1]);
+			cout << expr(input, curr_tok, number_value) << endl;
+		}
+		else 
+			throw string("error");
 	}
-	while (*input) {
-		if (curr_tok == END) 
-			break;
-		cout << expr(input) << endl;
+	catch (string &s) {
+		cerr << s << endl;
+		return 1;
 	}
-	delete input;
 	return 0;
 }
