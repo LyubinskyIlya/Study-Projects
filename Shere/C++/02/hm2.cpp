@@ -39,7 +39,7 @@ void get_token(istringstream &input, Token_value &curr_tok, int64_t &number_valu
 			curr_tok = NUMBER;
 			return;
 		default:
-			throw string("error");
+			throw runtime_error("error");
 	}
 }
 
@@ -56,7 +56,7 @@ int64_t prim(istringstream &input, Token_value &curr_tok, int64_t &number_value)
 		case PLUS:
 			return prim(input, curr_tok, number_value);
 		default:
-			throw string("error");
+			throw runtime_error("error");
 	}
 }
 
@@ -73,7 +73,7 @@ int64_t term(istringstream &input, Token_value &curr_tok, int64_t &number_value)
 					break;
 				}
 				else {
-					throw string("error");
+					throw runtime_error("Div by 0");
 				}
 			default:
 				return left;
@@ -106,11 +106,16 @@ int main(int argc, char* argv[]) {
 			cout << expr(input, curr_tok, number_value) << endl;
 		}
 		else 
-			throw string("error");
+			throw logic_error("Expected 2 args");
 	}
-	catch (string &s) {
-		cerr << s << endl;
+	catch (logic_error &s) {
+		cerr << s.what() << endl;
 		return 1;
 	}
+	catch (runtime_error &s) {
+		cerr << s.what() << endl;
+		return 2;
+	}
+	catch(...){}
 	return 0;
 }
