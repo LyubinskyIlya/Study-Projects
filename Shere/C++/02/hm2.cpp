@@ -116,6 +116,5 @@ int main(int argc, char* argv[]) {
 		cerr << s.what() << endl;
 		return 2;
 	}
-	catch(...){}
 	return 0;
 }
