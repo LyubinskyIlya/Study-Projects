@@ -7,12 +7,12 @@ public:
 	}
 	const int& operator[](const int i) const {
 		if (i < 0 || i >= size)
-			throw std::out_of_range("Col number is out of ragne");
+			throw std::out_of_range("Col number is out of range");
 		return data[i];
 	}
 	int& operator[](const int i) {
 		if (i < 0 || i >= size)
-			throw std::out_of_range("Col number is out of ragne");
+			throw std::out_of_range("Col number is out of range");
 		return data[i];
 	}
 	Row& operator=(const Row& r) {
@@ -51,12 +51,12 @@ public:
 	}
 	const Row& operator[](const int i) const {
 		if (i < 0 || i >= rows)
-			throw std::out_of_range("Row number is out of ragne");
+			throw std::out_of_range("Row number is out of range");
 		return data[i];
 	}
 	Row& operator[](const int i) {
 		if (i < 0 || i >= rows)
-			throw std::out_of_range("Row number is out of ragne");
+			throw std::out_of_range("Row number is out of range");
 		return data[i];
 	}
 	bool operator==(const Matrix& m) const {
