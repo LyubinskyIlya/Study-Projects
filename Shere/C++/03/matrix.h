@@ -34,7 +34,7 @@ class Matrix {
 	int rows, cols;
 	Row* data;
 public:
-	Matrix(const int r, const int s) :rows(r), cols(s) {
+	Matrix(const int r = 0, const int s = 0) :rows(r), cols(s) {
 		data = new Row[rows];
 		for (int i = 0; i < rows; i++) {
 			data[i] = Row(cols);
