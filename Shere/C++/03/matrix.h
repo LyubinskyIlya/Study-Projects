@@ -6,25 +6,25 @@ public:
 		data = new int[size];
 	}
 	const int& operator[](const int i) const {
-        if (i < 0 || i >= size)
-            throw std::out_of_range("Col number is out of ragne");
+		if (i < 0 || i >= size)
+			throw std::out_of_range("Col number is out of ragne");
 		return data[i];
 	}
 	int& operator[](const int i) {
-        if (i < 0 || i >= size)
-            throw std::out_of_range("Col number is out of ragne");
+		if (i < 0 || i >= size)
+			throw std::out_of_range("Col number is out of ragne");
 		return data[i];
 	}
-    Row& operator=(const Row& r) {
-        if (this == &r)
-            return *this;
-        size = r.size;
-        delete[] data;
-        data = new int[size];
-        for (int i = 0; i < size; i++)
-            data[i] = r.data[i];
-        return *this;
-    }	
+	Row& operator=(const Row& r) {
+		if (this == &r)
+			return *this;
+		size = r.size;
+		delete[] data;
+		data = new int[size];
+		for (int i = 0; i < size; i++)
+			data[i] = r.data[i];
+		return *this;
+	}	
 	~Row() {
 		delete[] data;
 	}
@@ -44,26 +44,26 @@ public:
 		for (int i = 0; i < rows; i++)
 			for (int j = 0; j < cols; j++)
 				data[i][j] = data[i][j]*a;
-        return *this;
+		return *this;
 	}
 	~Matrix() {
 		delete[] data;
 	}
 	const Row& operator[](const int i) const {
-        if (i < 0 || i >= rows)
-            throw std::out_of_range("Row number is out of ragne");
+		if (i < 0 || i >= rows)
+			throw std::out_of_range("Row number is out of ragne");
 		return data[i];
 	}
 	Row& operator[](const int i) {
-        if (i < 0 || i >= rows)
-            throw std::out_of_range("Row number is out of ragne");
+		if (i < 0 || i >= rows)
+			throw std::out_of_range("Row number is out of ragne");
 		return data[i];
 	}
 	bool operator==(const Matrix& m) const {
 		if (this == &m)
 			return true;
-        if (rows != m.rows || cols != m.cols)
-            return false;
+		if (rows != m.rows || cols != m.cols)
+			return false;
 		for (int i = 0; i < rows; i++)
 			for (int j = 0; j < rows; j++)
 				if (data[i][j] != m[i][j])
