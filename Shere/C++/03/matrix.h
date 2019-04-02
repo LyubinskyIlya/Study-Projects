@@ -1,3 +1,5 @@
+#include <new>
+
 class Row {
 	int size;
 	int* data;
@@ -7,12 +9,12 @@ public:
 	}
 	const int& operator[](const int i) const {
 		if (i < 0 || i >= size)
-			throw std::out_of_range("Col number is out of range");
+			throw std::out_of_range("Col number is out of ragne");
 		return data[i];
 	}
 	int& operator[](const int i) {
 		if (i < 0 || i >= size)
-			throw std::out_of_range("Col number is out of range");
+			throw std::out_of_range("Col number is out of ragne");
 		return data[i];
 	}
 	Row& operator=(const Row& r) {
@@ -35,9 +37,9 @@ class Matrix {
 	Row* data;
 public:
 	Matrix(const int r = 0, const int s = 0) :rows(r), cols(s) {
-		data = new Row[rows];
+		data = static_cast<Row*>(operator new[] (rows * sizeof(Row)));
 		for (int i = 0; i < rows; i++) {
-			data[i] = Row(cols);
+			new (data + i) Row(cols);
 		}
 	}
 	const Matrix& operator*=(const int a) {
@@ -47,16 +49,19 @@ public:
 		return *this;
 	}
 	~Matrix() {
-		delete[] data;
+		for (int i = 0; i < rows; i++) {
+			data[i].~Row();
+		}
+		operator delete[] (data);
 	}
 	const Row& operator[](const int i) const {
 		if (i < 0 || i >= rows)
-			throw std::out_of_range("Row number is out of range");
+			throw std::out_of_range("Row number is out of ragne");
 		return data[i];
 	}
 	Row& operator[](const int i) {
 		if (i < 0 || i >= rows)
-			throw std::out_of_range("Row number is out of range");
+			throw std::out_of_range("Row number is out of ragne");
 		return data[i];
 	}
 	bool operator==(const Matrix& m) const {
