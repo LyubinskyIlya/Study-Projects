@@ -62,7 +62,7 @@ int main()
 {
 	std::thread ping(printping);
 	std::thread pong(printpong);
-	ping.detach();
+	ping.join();
 	pong.join();
 	return 0;
 }
