@@ -14,7 +14,7 @@ int sortarr(int start, int fin, int th_num, const std::string filename)
 {
     if (start == fin)
         return -1;
-    int bufsize = 1024*512;
+    int bufsize = 1024;
     int readed = 0;
     std::string outname("");
     int writed = 0; // files created
@@ -59,9 +59,9 @@ int sortarr(int start, int fin, int th_num, const std::string filename)
     return writed-1; // номер последнего записанного файла
 }
 
-void my_merge(string filename1, string filename2, string outname) 
+void my_merge(const string filename1, const string filename2, const string outname) 
 {
-    int bufsize = 1024*256/2;
+    int bufsize = 1024;
     uint64_t buf1[bufsize];
     int done1 = 0, readed1 = 0;
     bool end1 = false;
@@ -189,26 +189,33 @@ int main(int argc, char* argv[])
         size1 = size1 - (size1 % 4);
     }
 
-    auto one = async(sortarr, 0, size1, 1, argv[1]);
-    int result1 = one.get();  // номер последнего записанного файла
+    try {
 
-    auto two = async(sortarr, size1, size, 2, argv[1]);
-    int result2 = two.get();  // номер последнего записанного файла
+        auto one = async(sortarr, 0, size1, 1, argv[1]);
+        int result1 = one.get();  // номер последнего записанного файла
 
-    thread first(many2one, 1, result1);
-    thread second(many2one, 2, result2);
+        auto two = async(sortarr, size1, size, 2, argv[1]);
+        int result2 = two.get();  // номер последнего записанного файла
 
-    first.join();
-    second.join();
+        thread first(many2one, 1, result1);
+        thread second(many2one, 2, result2);
 
-    string file1 = std::to_string(1) + "-" + std::to_string(0);
-    string file2 = std::to_string(2) + "-" + std::to_string(0);
+        first.join();
+        second.join();
+
+        string file1 = std::to_string(1) + "-" + std::to_string(0);
+        string file2 = std::to_string(2) + "-" + std::to_string(0);
 
 
-    my_merge(file1, file2, argv[2]);
+        my_merge(file1, file2, argv[2]);
 
-    remove(file1.c_str());
-    remove(file2.c_str());
+        remove(file1.c_str());
+        remove(file2.c_str());
+    }
+    catch (runtime_error &s) {
+        cerr << s.what() << endl;
+        return 1;
+    }
 
     return 0; 
 }
