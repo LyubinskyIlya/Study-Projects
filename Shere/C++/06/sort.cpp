@@ -1,11 +1,12 @@
 #include <iostream>
 #include <thread>
 #include <algorithm>
-//#include <vector>
+#include <vector>
 #include <fstream> 
 #include <stdexcept>
 #include <fstream>
 #include <future>
+//#include <pthread.h>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ int sortarr(int start, int fin, int th_num, const std::string filename)
 {
     if (start == fin)
         return -1;
+   // int n = 0; // files created
     int bufsize = 1024*512;
     int readed = 0;
     std::string outname("");
@@ -28,31 +30,34 @@ int sortarr(int start, int fin, int th_num, const std::string filename)
 
     file.seekg(start);
     int pos = file.tellg();
+    //cout << pos << fin << endl;
     while (pos < fin) 
     {
         if (fin - pos > bufsize) 
         {
-            file.read(reinterpret_cast<char*>(buf), bufsize);
+            file.read(reinterpret_cast<char*>(buf), bufsize*sizeof(uint64_t));
             readed = file.gcount();
             if (readed < bufsize) 
                 throw std::runtime_error("Read error-1");
         }
         else
         {
-            file.read(reinterpret_cast<char*>(buf), (fin-pos));
+            file.read(reinterpret_cast<char*>(buf), (fin-pos)*sizeof(uint64_t));
             readed = file.gcount();
             if (readed < fin-pos) 
                 throw std::runtime_error("Read error-2");
         }
+        if (readed == 0)
+        	throw std::runtime_error("Read error-3");
         pos += readed;
-        std::sort(buf, buf+readed/8);
+        std::sort(buf, buf+readed);
         outname = std::to_string(th_num) + "-" + std::to_string(writed);
         std::ofstream out(outname, std::ofstream::out | std::ofstream::binary);
 
         if (!out.is_open()) 
             throw std::runtime_error("Open error");
 
-        out.write(reinterpret_cast<char*>(buf), readed);
+        out.write(reinterpret_cast<char*>(buf), readed*sizeof(uint64_t));
         out.close();
         writed += 1;
     }
@@ -61,7 +66,7 @@ int sortarr(int start, int fin, int th_num, const std::string filename)
 
 void my_merge(string filename1, string filename2, string outname) 
 {
-    int bufsize = 1024*256/2;
+    int bufsize = 1024*256;
     uint64_t buf1[bufsize];
     int done1 = 0, readed1 = 0;
     bool end1 = false;
@@ -69,8 +74,7 @@ void my_merge(string filename1, string filename2, string outname)
     int done2 = 0, readed2 = 0;
     bool end2 = false;
 
-    int outbufsize = bufsize * 2;
-    uint64_t bufout[outbufsize];
+    uint64_t bufout[2*bufsize];
     int doneout = 0;
     
     std::ifstream file1(filename1, std::ifstream::in | std::ifstream::binary);
@@ -95,7 +99,6 @@ void my_merge(string filename1, string filename2, string outname)
     		done1 = 0;
     		if (readed1 == 0)
     			end1 = true;
-            readed1 /= 8;
     	}
     	if (done2 == readed2)
     	{
@@ -104,7 +107,6 @@ void my_merge(string filename1, string filename2, string outname)
     		done2 = 0;
     		if (readed2 == 0)
     			end2 = true;
-            readed2 /= 8;
     	}
     	// выводим накопившиеся в выходном буфере данные
     	out.write(reinterpret_cast<char*>(bufout), doneout*sizeof(uint64_t));
@@ -128,20 +130,6 @@ void my_merge(string filename1, string filename2, string outname)
     			done2++;
     		}
     	}
-        if (end1)
-            while (done2 < readed2)
-            {
-                bufout[doneout] = buf2[done2];
-                doneout++;
-                done2++;
-            }
-        if (end2)
-            while (done1 < readed1)
-            {
-                bufout[doneout] = buf1[done1];
-                doneout++;
-                done1++;
-            }
     }
 } 
 
@@ -153,7 +141,7 @@ void many2one(int th_num, int count)
 	string file1 = std::to_string(th_num) + "-" + std::to_string(done);
 	string file2 = std::to_string(th_num) + "-" + std::to_string(done+1);
 	string out = "out" + std::to_string(th_num) + "tmp";
-	while (done + 1 <= count)
+	while (done + 1 < count)
 	{
 		my_merge(file1, file2, out);
 		remove(file1.c_str());
@@ -204,11 +192,9 @@ int main(int argc, char* argv[])
 	string file1 = std::to_string(1) + "-" + std::to_string(0);
 	string file2 = std::to_string(2) + "-" + std::to_string(0);
 
+	cout << "here" << endl;
 
 	my_merge(file1, file2, argv[2]);
-
-    remove(file1.c_str());
-    remove(file2.c_str());
 
 	return 0; 
 }
