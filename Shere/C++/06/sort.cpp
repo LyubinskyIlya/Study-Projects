@@ -181,6 +181,8 @@ int64_t file_size(const std::string filename)
 // на вход - имя файла к сортировке и имя выходного файла
 int main(int argc, char* argv[])
 {
+    if (argc != 3)
+        return -1;
     int size = file_size(argv[1]);
     int size1 = size/2;
 
