@@ -203,8 +203,8 @@ int main(int argc, char* argv[])
         first.join();
         second.join();
 
-        string file1 = std::to_string(1) + "-" + std::to_string(0);
-        string file2 = std::to_string(2) + "-" + std::to_string(0);
+        string file1 = "1-0";
+        string file2 = "2-0";
 
 
         my_merge(file1, file2, argv[2]);
