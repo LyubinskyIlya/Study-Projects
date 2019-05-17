@@ -759,7 +759,7 @@ int main(int argc, char * argv[]) {
         deploy(KEY);
         callmode(KEY);
         return 0;
-    } //try end
+    }
     catch (const char * s) {
         cerr << s << endl;
         printman();
